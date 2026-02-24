@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>New Message - Inner Circle</title>
+</head>
+<body>
+
+  <h1>Create a Message</h1>
+
+  <form action="/messages" method="POST">
+    
+    <label>Message:</label><br>
+    <textarea name="content" required></textarea><br><br>
+
+    <% if (user.role === "member") { %>
+      <label>
+        <input type="checkbox" name="is_member_only">
+        Member Only
+      </label><br><br>
+    <% } %>
+
+    <button type="submit">Post Message</button>
+  </form>
+
+  <br>
+  <a href="/messages">Back</a>
+
+</body>
+</html>

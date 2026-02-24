@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Inner Circle</title>
+</head>
+<body>
+
+  <h1>Inner Circle</h1>
+
+  <% if (!user) { %>
+    <p>You are in view-only mode.</p>
+    <a href="/login">Login</a> |
+    <a href="/signup">Sign Up</a>
+  <% } else { %>
+    <p>Welcome, <%= user.full_name %> (<%= user.role %>)</p>
+    <a href="/logout">Logout</a>
+  <% } %>
+
+  <hr>
+
+  <h2>Messages</h2>
+
+  <% messages.forEach(message => { %>
+    <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+      
+      <% if (message.is_member_only && (!user || user.role !== "member")) { %>
+        <p>🔒 Locked Message</p>
+        <a href="/enter-secret">Unlock</a>
+      <% } else { %>
+        <p><%= message.content %></p>
+
+        <% if (user) { %>
+          <small>
+            Posted by: <%= message.email %> |
+            <%= new Date(message.created_at).toLocaleString() %>
+          </small>
+        <% } %>
+      <% } %>
+
+    </div>
+  <% }) %>
+
+  <% if (user) { %>
+  <hr>
+  <a href="/messages/new">
+    <button>Create Message</button>
+  </a>
+<% } %>
+
+</body>
+</html>
