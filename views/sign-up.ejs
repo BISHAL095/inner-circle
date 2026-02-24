@@ -6,6 +6,9 @@
 <body>
 
   <h1>Join Inner Circle</h1>
+  <% if (error) { %>
+    <p style="color:red;"><%= error %></p>
+    <% } %>
 
   <form action="/signup" method="POST">
 

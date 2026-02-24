@@ -12,8 +12,15 @@
     <a href="/login">Login</a> |
     <a href="/signup">Sign Up</a>
   <% } else { %>
-    <p>Welcome, <%= user.full_name %> (<%= user.role %>)</p>
-    <a href="/logout">Logout</a>
+    <p>
+      Welcome, <%= user.full_name %> 
+      (<%= user.role %>)
+    </p>
+
+    <!-- Secure Logout (POST) -->
+    <form action="/logout" method="POST" style="display:inline;">
+      <button type="submit">Logout</button>
+    </form>
   <% } %>
 
   <hr>
@@ -21,31 +28,56 @@
   <h2>Messages</h2>
 
   <% messages.forEach(message => { %>
-    <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
-      
-      <% if (message.is_member_only && (!user || user.role !== "member")) { %>
-        <p>🔒 Locked Message</p>
-        <a href="/enter-secret">Unlock</a>
-      <% } else { %>
+    <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
+
+        <% if (message.is_member_only) { %>
+
+        <% if (!user) { %>
+            <!-- Guest -->
+            <p>🔒 This message is for members only.</p>
+            <a href="/signup">
+            <button>Sign Up to Unlock</button>
+            </a>
+
+        <% } else if (user.role !== "member") { %>
+            <!-- Logged in but not member -->
+            <p>🔒 Members Only Content</p>
+            <a href="/enter-secret">
+            <button>Upgrade to Member</button>
+            </a>
+
+        <% } else { %>
+            <!-- Member -->
+            <p><%= message.content %></p>
+            <small>
+            Posted by: <%= message.full_name %> |
+            <%= new Date(message.created_at).toLocaleString() %>
+            </small>
+
+        <% } %>
+
+        <% } else { %>
+        <!-- Public message -->
         <p><%= message.content %></p>
 
         <% if (user) { %>
-          <small>
-            Posted by: <%= message.email %> |
+            <small>
+            Posted by: <%= message.full_name %> |
             <%= new Date(message.created_at).toLocaleString() %>
-          </small>
+            </small>
         <% } %>
-      <% } %>
+
+        <% } %>
 
     </div>
-  <% }) %>
+    <% }) %>
 
   <% if (user) { %>
-  <hr>
-  <a href="/messages/new">
-    <button>Create Message</button>
-  </a>
-<% } %>
+    <hr>
+    <a href="/messages/new">
+      <button>Create Message</button>
+    </a>
+  <% } %>
 
 </body>
 </html>
