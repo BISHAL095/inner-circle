@@ -1,83 +1,139 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Inner Circle</title>
+  <link rel="stylesheet" href="/css/output.css">
 </head>
-<body>
 
-  <h1>Inner Circle</h1>
+<body class="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-black text-gray-200">
 
-  <% if (!user) { %>
-    <p>You are in view-only mode.</p>
-    <a href="/login">Login</a> |
-    <a href="/signup">Sign Up</a>
-  <% } else { %>
-    <p>
-      Welcome, <%= user.full_name %> 
-      (<%= user.role %>)
-    </p>
+  <!-- Navbar -->
+  <nav class="border-b border-white/10 bg-white/5 backdrop-blur-lg">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
 
-    <!-- Secure Logout (POST) -->
-    <form action="/logout" method="POST" style="display:inline;">
-      <button type="submit">Logout</button>
-    </form>
-  <% } %>
+      <h1 class="text-xl font-bold tracking-tight text-white">
+        Inner Circle
+      </h1>
 
-  <hr>
+      <% if (!user) { %>
+        <div class="space-x-4 text-sm">
+          <a href="/login" class="text-indigo-400 hover:text-indigo-300 font-medium">Login</a>
+          <a href="/signup" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg transition">
+            Sign Up
+          </a>
+        </div>
+      <% } else { %>
+        <div class="flex items-center space-x-4 text-sm">
+          <span class="text-gray-400">
+            <span class="text-white font-medium"><%= user.full_name %></span>
+            <span class="text-indigo-400">(<%= user.role %>)</span>
+          </span>
 
-  <h2>Messages</h2>
-
-  <% messages.forEach(message => { %>
-    <div style="border:1px solid #ccc; padding:15px; margin:15px 0;">
-
-        <% if (message.is_member_only) { %>
-
-        <% if (!user) { %>
-            <!-- Guest -->
-            <p>🔒 This message is for members only.</p>
-            <a href="/signup">
-            <button>Sign Up to Unlock</button>
-            </a>
-
-        <% } else if (user.role !== "member") { %>
-            <!-- Logged in but not member -->
-            <p>🔒 Members Only Content</p>
-            <a href="/enter-secret">
-            <button>Upgrade to Member</button>
-            </a>
-
-        <% } else { %>
-            <!-- Member -->
-            <p><%= message.content %></p>
-            <small>
-            Posted by: <%= message.full_name %> |
-            <%= new Date(message.created_at).toLocaleString() %>
-            </small>
-
-        <% } %>
-
-        <% } else { %>
-        <!-- Public message -->
-        <p><%= message.content %></p>
-
-        <% if (user) { %>
-            <small>
-            Posted by: <%= message.full_name %> |
-            <%= new Date(message.created_at).toLocaleString() %>
-            </small>
-        <% } %>
-
-        <% } %>
+          <form action="/logout" method="POST">
+            <button class="text-red-400 hover:text-red-300 font-medium">
+              Logout
+            </button>
+          </form>
+        </div>
+      <% } %>
 
     </div>
-    <% }) %>
+  </nav>
 
-  <% if (user) { %>
-    <hr>
-    <a href="/messages/new">
-      <button>Create Message</button>
-    </a>
-  <% } %>
+
+  <!-- Main Content -->
+  <div class="max-w-4xl mx-auto px-6 py-10">
+
+    <% if (!user) { %>
+      <div class="mb-8 p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-300 text-sm">
+        You are browsing in view-only mode.
+      </div>
+    <% } %>
+
+    <h2 class="text-2xl font-semibold text-white mb-6">Messages</h2>
+
+    <div class="space-y-6">
+
+      <% messages.forEach(message => { %>
+
+        <div class="bg-white/5 border border-white/10 rounded-2xl p-6 shadow-lg backdrop-blur-lg">
+
+          <% if (message.is_member_only) { %>
+
+            <% if (!user) { %>
+              <!-- Guest -->
+              <div class="text-center">
+                <p class="text-lg font-medium text-yellow-400 mb-3">
+                  🔒 This message is for members only.
+                </p>
+                <a href="/signup">
+                  <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-lg transition">
+                    Sign Up to Unlock
+                  </button>
+                </a>
+              </div>
+
+            <% } else if (user.role !== "member") { %>
+              <!-- Logged in but not member -->
+              <div class="text-center">
+                <p class="text-lg font-medium text-yellow-400 mb-3">
+                  🔒 Members Only Content
+                </p>
+                <a href="/upgrade">
+                  <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2 rounded-lg transition">
+                    Upgrade to Member
+                  </button>
+                </a>
+              </div>
+
+            <% } else { %>
+              <!-- Member -->
+              <p class="text-gray-200 leading-relaxed mb-4">
+                <%= message.content %>
+              </p>
+
+              <small class="text-gray-500 text-xs">
+                Posted by <span class="text-indigo-400"><%= message.full_name %></span> ·
+                <%= new Date(message.created_at).toLocaleString() %>
+              </small>
+
+            <% } %>
+
+          <% } else { %>
+            <!-- Public Message -->
+            <p class="text-gray-200 leading-relaxed mb-4">
+              <%= message.content %>
+            </p>
+
+            <% if (user) { %>
+              <small class="text-gray-500 text-xs">
+                Posted by <span class="text-indigo-400"><%= message.full_name %></span> ·
+                <%= new Date(message.created_at).toLocaleString() %>
+              </small>
+            <% } %>
+
+          <% } %>
+
+        </div>
+
+      <% }) %>
+
+    </div>
+
+
+    <% if (user) { %>
+      <div class="mt-10 text-center">
+        <a href="/messages/new">
+          <button class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-semibold shadow-lg shadow-indigo-600/20 transition">
+            + Create Message
+          </button>
+        </a>
+      </div>
+    <% } %>
+
+  </div>
 
 </body>
 </html>

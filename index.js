@@ -36,11 +36,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static("public"));
 /* ---------- Routes ---------- */
 
-app.get("/", (req, res) => {
-  res.redirect("/messages");
-});
+
 
 app.use("/", authRoutes);
 app.use("/", messageRoutes);

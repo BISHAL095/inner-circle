@@ -1,4 +1,5 @@
 const addUser = require("../queries/addUser");
+const upgradeRoleQuery = require("../queries/upgradeRole");
 
 exports.showSignup = (req, res) => {
   res.render("sign-up", { error: null });
@@ -40,5 +41,28 @@ exports.signup = async (req, res) => {
     }
 
     res.render("sign-up", { error: "Signup failed. Try again." });
+  }
+};
+
+
+exports.upgradeRole = async (req, res) => {
+  try {
+    const { secretCode } = req.body;
+
+    if (secretCode !== process.env.MEMBER_SECRET) {
+      return res.render("upgrade", { error: "Invalid secret code" });
+    }
+
+    const updatedUser = await upgradeRoleQuery(req.user.id, "member");
+
+    // Update session user
+    req.login(updatedUser, (err) => {
+      if (err) throw err;
+      res.redirect("/");
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.render("upgrade", { error: "Something went wrong" });
   }
 };
