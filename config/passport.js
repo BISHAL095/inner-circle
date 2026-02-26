@@ -2,7 +2,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const bcrypt = require("bcrypt");
 
 const getUserByEmail = require("../queries/getUserByEmail");
-const getUserById = require("../queries/getUserByID");
+const getUserById = require("../queries/getUserById");
 
 module.exports = function (passport) {
 
